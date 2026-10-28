@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>พูดจีนใช้จริง – วลีท่องเที่ยวและชีวิตประจำวัน</title>
+<meta name="description" content="รวมวลีภาษาจีนที่เจ้าของภาษาใช้จริง พร้อม Pinyin คำแปล และคำอ่านไทย">
+<style>
+:root{--bg:#eef3f1;--card:#fff;--ink:#12262a;--mute:#5b6f72;--jade:#0d7a66;--jade-s:#d6ece6;--seal:#c0272d;--line:#d3dedb}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1a1c;--card:#16272a;--ink:#e6f0ee;--mute:#93a9ab;--jade:#4cc7ad;--jade-s:#1d3b37;--seal:#ff7a7f;--line:#27403f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Noto Sans Thai","Sarabun",system-ui,sans-serif}
+header{padding:28px 16px 12px;max-width:760px;margin:auto}
+h1{margin:0;font-size:1.7rem}
+h1 span{color:var(--seal);font-family:"Noto Serif SC","Songti SC",serif;margin-right:8px}
+header p{margin:6px 0 0;color:var(--mute)}
+.bar{position:sticky;top:0;background:var(--bg);padding:10px 16px;max-width:760px;margin:auto;z-index:5;border-bottom:1px solid var(--line)}
+input[type=search]{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:thin}
+.chips button,.opts label{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 14px;border-radius:99px;font:inherit;font-size:.9rem;cursor:pointer}
+.chips button[aria-pressed=true]{background:var(--jade);border-color:var(--jade);color:#fff}
+.opts{display:flex;gap:14px;font-size:.88rem;color:var(--mute);padding-top:6px}
+.opts label{border:0;background:none;padding:0;color:var(--mute)}
+main{max-width:760px;margin:auto;padding:8px 16px 60px}
+h2{font-size:1.05rem;margin:26px 0 8px;padding-left:10px;border-left:4px solid var(--jade)}
+.item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:2px 10px}
+.zh{font-size:1.45rem;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;cursor:zoom-in;line-height:1.4}
+.py{color:var(--jade);font-size:.95rem}
+.th{font-weight:600}
+.rd{color:var(--mute);font-size:.92rem}
+.say{grid-row:1/4;grid-column:2;align-self:center;width:42px;height:42px;border-radius:50%;border:1px solid var(--jade);background:var(--jade-s);color:var(--jade);font-size:1.1rem;cursor:pointer}
+.hide-py .py,.hide-rd .rd{display:none}
+#big{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;z-index:20;cursor:zoom-out}
+#big.on{display:flex}
+#big .zh{font-size:clamp(2.2rem,11vw,5rem);cursor:inherit}
+#big p{margin:10px 0 0;color:var(--mute)}
+#empty{display:none;text-align:center;color:var(--mute);padding:40px 0}
+footer{max-width:760px;margin:auto;padding:0 16px 40px;color:var(--mute);font-size:.82rem}
+:focus-visible{outline:3px solid var(--jade);outline-offset:2px}
+</style>
+</head>
+<body>
+<header>
+  <h1><span>中文</span>พูดจีนใช้จริง</h1>
+  <p>วลีที่ใช้บ่อยตอนเที่ยวและในชีวิตประจำวัน — จ่ายด้วยมือถือ เรียกรถ สั่งเดลิเวอรี — จีน · Pinyin · คำแปล · คำอ่านไทย</p>
+</header>
+<div class="bar">
+  <input type="search" id="q" placeholder="ค้นหา เช่น ห้องน้ำ, 多少钱, xiexie" aria-label="ค้นหาวลี">
+  <div class="chips" id="chips"></div>
+  <div class="opts">
+    <label><input type="checkbox" id="tp" checked> Pinyin</label>
+    <label><input type="checkbox" id="tr" checked> คำอ่านไทย</label>
+    <span>แตะตัวอักษรจีนเพื่อขยายโชว์คนท้องถิ่น</span>
+  </div>
+</div>
+<main id="list"></main>
+<p id="empty">ไม่พบวลีที่ค้นหา ลองใช้คำอื่น</p>
+<div id="big" role="dialog" aria-label="ข้อความขยาย"></div>
+<footer>
+  คำอ่านไทยเป็นเพียงตัวช่วยประมาณเสียง เสียงวรรณยุกต์จริงให้ฟังจากปุ่มเสียงหรือเจ้าของภาษา · วลีในเว็บนี้เรียบเรียงใหม่ตามหมวดหัวข้อที่ใช้บ่อย เพื่อใช้เทียบกับหนังสือ “พูดจีนคล่อง 3000 วลี” หากต้องการวลีครบถ้วนโปรดซื้อหนังสือต้นฉบับ
+</footer>
+<script>
+// รูปแบบ: จีน|Pinyin|คำแปลไทย|คำอ่านไทย  (เพิ่มวลีใหม่ได้ที่นี่)
+const DATA={
+"ทักทาย & แนะนำตัว":[
+"你好|nǐ hǎo|สวัสดี|หนี่ ห่าว",
+"谢谢|xièxie|ขอบคุณ|เซี่ย เซีย",
+"不客气|bú kèqi|ไม่เป็นไร / ยินดี|ปู๋ เค่อ ชี่",
+"对不起|duìbuqǐ|ขอโทษ|ตุ้ย ปู้ ฉี่",
+"请问|qǐngwèn|ขอถามหน่อย|ฉิ่ง เวิ่น",
+"你叫什么名字？|nǐ jiào shénme míngzi?|คุณชื่ออะไร|หนี่ เจี้ยว เสิน เมอ หมิง จึ",
+"我是泰国人|wǒ shì Tàiguó rén|ฉันเป็นคนไทย|หว่อ ชื่อ ไท่ กั๋ว เหริน",
+"很高兴认识你|hěn gāoxìng rènshi nǐ|ยินดีที่ได้รู้จัก|เหิ่น เกา ซิ่ง เหริ่น สื่อ หนี่",
+"明天见|míngtiān jiàn|พรุ่งนี้เจอกัน|หมิง เทียน เจี้ยน"],
+"สื่อสารไม่ออก":[
+"我不会说中文|wǒ bú huì shuō Zhōngwén|ฉันพูดจีนไม่เป็น|หว่อ ปู๋ ฮุ่ย ชัว จง เหวิน",
+"请说慢一点|qǐng shuō màn yìdiǎn|กรุณาพูดช้าลงหน่อย|ฉิ่ง ชัว ม่าน อี้ เตี่ยน",
+"我听不懂|wǒ tīng bu dǒng|ฉันฟังไม่เข้าใจ|หว่อ ทิง ปุ ตง",
+"请再说一遍|qǐng zài shuō yí biàn|กรุณาพูดอีกครั้ง|ฉิ่ง ไจ้ ชัว อี๋ เปี้ยน",
+"请写下来|qǐng xiě xiàlái|ช่วยเขียนให้หน่อย|ฉิ่ง เสี่ย เซี่ย ไหล",
+"有英文菜单吗？|yǒu Yīngwén càidān ma?|มีเมนูภาษาอังกฤษไหม|โหย่ว อิง เหวิน ไช่ ตาน มา"],
+"ช้อปปิ้ง":[
+"多少钱？|duōshao qián?|ราคาเท่าไร|ตัว เซา เฉียน",
+"太贵了|tài guì le|แพงเกินไป|ไท่ กุ้ย เลอ",
+"便宜一点|piányi yìdiǎn|ลดหน่อยได้ไหม|เพียน อี อี้ เตี่ยน",
+"我再看看|wǒ zài kànkan|ขอดูก่อนนะ|หว่อ ไจ้ ค่าน ค่าน",
+"有大一点的吗？|yǒu dà yìdiǎn de ma?|มีไซซ์ใหญ่กว่านี้ไหม|โหย่ว ต้า อี้ เตี่ยน เตอ มา",
+"我要这个|wǒ yào zhège|ฉันเอาอันนี้|หว่อ เย่า เจ้อ เก้อ",
+"可以刷卡吗？|kěyǐ shuā kǎ ma?|รูดบัตรได้ไหม|เข่อ อี่ ชวา ขา มา",
+"可以扫码支付吗？|kěyǐ sǎo mǎ zhīfù ma?|สแกน QR จ่ายเงินได้ไหม|เข่อ อี่ เส่า หม่า จือ ฟู่ มา",
+"可以用微信支付吗？|kěyǐ yòng Wēixìn zhīfù ma?|จ่ายด้วย WeChat Pay ได้ไหม|เข่อ อี่ ยง เวย ซิ่น จือ ฟู่ มา",
+"可以用支付宝吗？|kěyǐ yòng Zhīfùbǎo ma?|จ่ายด้วย Alipay ได้ไหม|เข่อ อี่ ยง จือ ฟู่ เป่า มา",
+"有优惠吗？|yǒu yōuhuì ma?|มีโปรโมชั่นไหม|โหย่ว โยว ฮุ่ย มา",
+"可以开发票吗？|kěyǐ kāi fāpiào ma?|ขอใบเสร็จ/ใบกำกับภาษีได้ไหม|เข่อ อี่ ไค ฟา เพี่ยว มา",
+"可以退税吗？|kěyǐ tuìshuì ma?|ขอคืนภาษีได้ไหม|เข่อ อี่ ทุ่ย ซุ่ย มา"],
+"ร้านอาหาร":[
+"请给我菜单|qǐng gěi wǒ càidān|ขอเมนูหน่อย|ฉิ่ง เก่ย หว่อ ไช่ ตาน",
+"我不吃辣|wǒ bù chī là|ฉันไม่กินเผ็ด|หว่อ ปู้ ชือ ล่า",
+"不要香菜|bú yào xiāngcài|ไม่ใส่ผักชี|ปู๋ เย่า เซียง ไช่",
+"我吃素|wǒ chī sù|ฉันกินเจ / มังสวิรัติ|หว่อ ชือ ซู่",
+"请给我一杯水|qǐng gěi wǒ yì bēi shuǐ|ขอน้ำเปล่าหนึ่งแก้ว|ฉิ่ง เก่ย หว่อ อี้ เปย สุ่ย",
+"很好吃|hěn hǎo chī|อร่อยมาก|เหิ่น ห่าว ชือ",
+"扫码点餐|sǎo mǎ diǎn cān|สแกน QR สั่งอาหาร|เส่า หม่า เตี่ยน ชาน",
+"我想点外卖|wǒ xiǎng diǎn wàimài|ฉันอยากสั่งเดลิเวอรี|หว่อ เสี่ยง เตี่ยน ไว่ ไม่",
+"打包|dǎbāo|ห่อกลับบ้าน|ต่า เปา",
+"买单|mǎidān|เช็กบิล|หมาย ตาน"],
+"เดินทาง":[
+"洗手间在哪里？|xǐshǒujiān zài nǎlǐ?|ห้องน้ำอยู่ที่ไหน|สี่ โส่ว เจียน ไจ้ หน่า หลี่",
+"地铁站在哪里？|dìtiězhàn zài nǎlǐ?|สถานีรถไฟใต้ดินอยู่ที่ไหน|ตี้ เถี่ย จ้าน ไจ้ หน่า หลี่",
+"我要去机场|wǒ yào qù jīchǎng|ฉันจะไปสนามบิน|หว่อ เย่า ชวี่ จี ฉ่าง",
+"请打表|qǐng dǎ biǎo|กรุณากดมิเตอร์|ฉิ่ง ต่า เปี่ยว",
+"我用滴滴叫车|wǒ yòng Dīdī jiào chē|ฉันเรียกรถผ่าน Didi|หว่อ ยง ตี ตี เจี้ยว เชอ",
+"我的手机尾号是…|wǒ de shǒujī wěihào shì…|เลขท้ายเบอร์มือถือฉันคือ…|หว่อ เตอ โส่ว จี เหวย ห่าว ชื่อ",
+"高铁站在哪里？|gāotiězhàn zài nǎlǐ?|สถานีรถไฟความเร็วสูงอยู่ที่ไหน|เกา เถี่ย จ้าน ไจ้ หน่า หลี่",
+"我在手机上订了票|wǒ zài shǒujī shàng dìng le piào|ฉันจองตั๋วในมือถือไว้แล้ว|หว่อ ไจ้ โส่ว จี ช่าง ติ้ง เลอ เพี่ยว",
+"怎么扫共享单车？|zěnme sǎo gòngxiǎng dānchē?|สแกนจักรยานแชร์ยังไง|เจิ่น เมอ เส่า ก้ง เสี่ยง ตาน เชอ",
+"在这里停|zài zhèlǐ tíng|จอดตรงนี้|ไจ้ เจ้อ หลี่ ทิง",
+"离这里远吗？|lí zhèlǐ yuǎn ma?|ไกลจากที่นี่ไหม|หลี เจ้อ หลี่ เหวี่ยน มา",
+"一直走|yìzhí zǒu|เดินตรงไป|อี้ จื๋อ โจ่ว",
+"买一张票|mǎi yì zhāng piào|ซื้อตั๋วหนึ่งใบ|หมาย อี้ จาง เพี่ยว"],
+"โรงแรม":[
+"我订了房间|wǒ dìng le fángjiān|ฉันจองห้องไว้แล้ว|หว่อ ติ้ง เลอ ฝาง เจียน",
+"办理入住|bànlǐ rùzhù|ขอเช็กอิน|ปั้น หลี่ ยู่ จู้",
+"退房|tuìfáng|เช็กเอาต์|ทุ่ย ฝาง",
+"Wi-Fi密码是多少？|Wi-Fi mìmǎ shì duōshao?|รหัส Wi-Fi คืออะไร|ไว ไฟ มี่ หม่า ชื่อ ตัว เซา",
+"空调坏了|kōngtiáo huài le|แอร์เสีย|คง เถียว ฮว่าย เลอ",
+"可以寄存行李吗？|kěyǐ jìcún xíngli ma?|ฝากกระเป๋าได้ไหม|เข่อ อี่ จี้ ฉุน สิง หลี่ มา"],
+"มือถือ & แอป":[
+"手机没电了|shǒujī méi diàn le|แบตมือถือหมด|โส่ว จี เหมย เตี้ยน เลอ",
+"可以借充电宝吗？|kěyǐ jiè chōngdiànbǎo ma?|ขอยืมพาวเวอร์แบงก์ได้ไหม|เข่อ อี่ เจี้ย ชง เตี้ยน เป่า มา",
+"我的网络不好|wǒ de wǎngluò bù hǎo|เน็ตของฉันไม่ดี|หว่อ เตอ หวัง ลั่ว ปู้ ห่าว",
+"我用翻译软件|wǒ yòng fānyì ruǎnjiàn|ฉันใช้แอปแปลภาษา|หว่อ ยง ฟาน อี้ รว่าน เจี้ยน",
+"请发定位给我|qǐng fā dìngwèi gěi wǒ|ช่วยส่งโลเคชันให้หน่อย|ฉิ่ง ฟา ติ้ง เวย เก่ย หว่อ",
+"我扫你|wǒ sǎo nǐ|ฉันสแกน QR ของคุณ|หว่อ เส่า หนี่",
+"你扫我|nǐ sǎo wǒ|คุณสแกน QR ของฉัน|หนี่ เส่า หว่อ"],
+"ฉุกเฉิน & สุขภาพ":[
+"救命！|jiùmìng!|ช่วยด้วย|จิ้ว มิ่ง",
+"我不舒服|wǒ bù shūfu|ฉันไม่สบาย|หว่อ ปู้ ชู ฝุ",
+"我肚子疼|wǒ dùzi téng|ฉันปวดท้อง|หว่อ ตู้ จึ เถิง",
+"我要去医院|wǒ yào qù yīyuàn|ฉันต้องไปโรงพยาบาล|หว่อ เย่า ชวี่ อี เยวี่ยน",
+"我的护照丢了|wǒ de hùzhào diū le|พาสปอร์ตของฉันหาย|หว่อ เตอ ฮู่ จ้าว ติว เลอ",
+"请帮我叫警察|qǐng bāng wǒ jiào jǐngchá|ช่วยเรียกตำรวจให้หน่อย|ฉิ่ง ปัง หว่อ เจี้ยว จิ่ง ฉา",
+"我的手机被偷了|wǒ de shǒujī bèi tōu le|มือถือฉันถูกขโมย|หว่อ เตอ โส่ว จี เป้ย โทว เลอ",
+"请帮我叫救护车|qǐng bāng wǒ jiào jiùhùchē|ช่วยเรียกรถพยาบาลให้หน่อย|ฉิ่ง ปัง หว่อ เจี้ยว จิ้ว ฮู้ เชอ"],
+"คุยกับเพื่อนใหม่":[
+"可以拍照吗？|kěyǐ pāizhào ma?|ถ่ายรูปได้ไหม|เข่อ อี่ ไพ จ้าว มา",
+"可以加微信吗？|kěyǐ jiā Wēixìn ma?|ขอแอดวีแชทได้ไหม|เข่อ อี่ เจีย เวย ซิ่น มา",
+"没问题|méi wèntí|ไม่มีปัญหา|เหมย เวิ่น ถี๋",
+"我明白了|wǒ míngbai le|เข้าใจแล้ว|หว่อ หมิง ไป๋ เลอ",
+"你真棒！|nǐ zhēn bàng!|คุณเก่งจริงๆ|หนี่ เจิน ป้าง",
+"太酷了！|tài kù le!|เจ๋งมาก|ไท่ คู่ เลอ",
+"真的吗？|zhēn de ma?|จริงเหรอ|เจิน เตอ มา",
+"不用了，谢谢|bú yòng le, xièxie|ไม่ต้องแล้ว ขอบคุณ|ปู๋ ยง เลอ เซี่ย เซีย",
+"我发给你|wǒ fā gěi nǐ|เดี๋ยวส่งให้ทางแชท|หว่อ ฟา เก่ย หนี่"]
+};
+const $=s=>document.querySelector(s),list=$('#list'),chips=$('#chips');
+let cat='ทั้งหมด';
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function chipBtns(){chips.innerHTML=['ทั้งหมด',...Object.keys(DATA)].map(c=>`<button aria-pressed="${c===cat}" data-c="${c}">${c}</button>`).join('')}
+function render(){
+  const q=$('#q').value.trim().toLowerCase();let n=0,h='';
+  for(const [c,arr] of Object.entries(DATA)){
+    if(cat!=='ทั้งหมด'&&cat!==c)continue;
+    const rows=arr.map(l=>l.split('|')).filter(r=>!q||r.join(' ').toLowerCase().includes(q));
+    if(!rows.length)continue;n+=rows.length;
+    h+=`<h2>${c}</h2>`+rows.map(r=>`<div class="item"><div class="zh" tabindex="0" role="button" data-zh="${esc(r[0])}" data-th="${esc(r[2])}">${esc(r[0])}</div><div class="py">${esc(r[1])}</div><div class="th">${esc(r[2])}</div><div class="rd">อ่านว่า: ${esc(r[3])}</div><button class="say" data-say="${esc(r[0])}" aria-label="ฟังเสียง ${esc(r[2])}">🔊</button></div>`).join('');
+  }
+  list.innerHTML=h;$('#empty').style.display=n?'none':'block';
+}
+chips.onclick=e=>{const b=e.target.closest('button');if(b){cat=b.dataset.c;chipBtns();render()}};
+$('#q').oninput=render;
+$('#tp').onchange=e=>document.body.classList.toggle('hide-py',!e.target.checked);
+$('#tr').onchange=e=>document.body.classList.toggle('hide-rd',!e.target.checked);
+list.onclick=e=>{
+  const s=e.target.closest('.say');
+  if(s){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s.dataset.say);u.lang='zh-CN';u.rate=.8;speechSynthesis.speak(u)}catch(_){}return}
+  const z=e.target.closest('.zh');
+  if(z){$('#big').innerHTML=`<div class="zh">${z.dataset.zh}</div><p>${z.dataset.th}</p>`;$('#big').classList.add('on')}
+};
+list.onkeydown=e=>{if(e.key==='Enter'&&e.target.classList.contains('zh'))e.target.click()};
+$('#big').onclick=()=>$('#big').classList.remove('on');
+document.onkeydown=e=>{if(e.key==='Escape')$('#big').classList.remove('on')};
+chipBtns();render();
+</script>
+</body>
+</html>
